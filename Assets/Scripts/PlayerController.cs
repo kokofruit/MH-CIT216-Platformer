@@ -12,6 +12,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float jumpHeight;
     [SerializeField] float maxSpeed;
     [SerializeField] float gravityMultiplier;
+    [SerializeField] GameObject fire;
+    [SerializeField] Transform firePoint;
 
     // Private
     Vector2 movementVector;
@@ -20,6 +22,8 @@ public class PlayerController : MonoBehaviour
     Rigidbody2D rb;                                                                         // for physics
     bool isGrounded = false;
     bool jump = false;
+    float fireRate = 0.3f;
+    float nextFire = 0f;
 
     // Start is called before the first frame update
     void Start()
@@ -114,6 +118,16 @@ public class PlayerController : MonoBehaviour
         }
     }
     #endregion
+
+    public void OnFire(InputValue fireValue)
+    {
+        if (Time.time > nextFire)
+        {
+            nextFire = Time.time + fireRate;
+            animator.SetTrigger("is_shooting");
+            Instantiate(fire, position: firePoint.position, rotation: Quaternion.identity);
+        }
+    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
