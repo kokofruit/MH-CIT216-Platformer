@@ -26,4 +26,12 @@ public class DragonController : MonoBehaviour
 
         transform.position = Vector2.Lerp(transform.position, new Vector2(transform.position.x - 1 * direction, transform.position.y), Time.deltaTime);
     }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Fire"))
+        {
+            Destroy(gameObject);
+        }
+    }
 }

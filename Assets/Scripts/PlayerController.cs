@@ -20,10 +20,12 @@ public class PlayerController : MonoBehaviour
     Animator animator;                                                                      // for animation
     SpriteRenderer spriteRenderer;                                                          // for sprite flip
     Rigidbody2D rb;                                                                         // for physics
+    AudioSource audioSource;
     bool isGrounded = false;
     bool jump = false;
     float fireRate = 0.3f;
     float nextFire = 0f;
+    bool facingRight = true;
 
     // Start is called before the first frame update
     void Start()
@@ -31,27 +33,28 @@ public class PlayerController : MonoBehaviour
         animator = GetComponent<Animator>();                                                // for animation
         spriteRenderer = GetComponent<SpriteRenderer>();                                    // for sprite flip
         rb = GetComponent<Rigidbody2D>();                                                   // for physics
+        audioSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
     void Update()
     {
         animator.SetFloat("player_speed", Mathf.Abs(movementVector.x));                     // for animation
-
-        if (Mathf.Abs(rb.velocity.x) < maxSpeed)
+        if (movementVector.x > 0 && !facingRight)
         {
-            if (movementVector.x > 0)
-            {
-                //transform.Translate(Vector2.right * movementSpeed * Time.deltaTime);
-                rb.AddForce(Vector2.right * movementSpeed);
-                spriteRenderer.flipX = false;
-            }
-            else if (movementVector.x < 0)
-            {
-                //transform.Translate(Vector2.left * movementSpeed * Time.deltaTime);
-                rb.AddForce(Vector2.left * movementSpeed);
-                spriteRenderer.flipX = true;
-            }
+            //transform.Translate(Vector2.right * movementSpeed * Time.deltaTime);
+                
+            //spriteRenderer.flipX = false;
+            Flip();
+            facingRight = true;
+        }
+        else if (movementVector.x < 0 && facingRight)
+        {
+            //transform.Translate(Vector2.left * movementSpeed * Time.deltaTime);
+            //spriteRenderer.flipX = true;
+            Flip();
+            facingRight = false;
+            
         }
 
         if (jump)
@@ -70,6 +73,11 @@ public class PlayerController : MonoBehaviour
         {
             rb.gravityScale = 1f;
         }
+    }
+
+    private void FixedUpdate()
+    {
+        if (Mathf.Abs(rb.velocity.x) < maxSpeed && movementVector.x != 0) rb.AddForce(GetDirection() * movementSpeed);
     }
 
     public void OnMove(InputValue movementValue)
@@ -125,7 +133,8 @@ public class PlayerController : MonoBehaviour
         {
             nextFire = Time.time + fireRate;
             animator.SetTrigger("is_shooting");
-            Instantiate(fire, position: firePoint.position, rotation: Quaternion.identity);
+            audioSource.PlayOneShot(audioSource.clip, Random.Range(0.8f, 1));
+            Instantiate(fire, firePoint.position, facingRight ? firePoint.rotation : Quaternion.Euler(0, 180, 0));
         }
     }
 
@@ -137,5 +146,19 @@ public class PlayerController : MonoBehaviour
             
             SceneManager.LoadScene(0);
         }
+    }
+
+    void Flip()
+    {
+        Vector3 theScale = transform.localScale;
+        theScale.x *= -1;
+        transform.localScale = theScale;
+    }
+
+    public Vector2 GetDirection()
+    {
+        //return facingRight;
+        if (facingRight) return Vector2.right;
+        else return Vector2.left;
     }
 }
