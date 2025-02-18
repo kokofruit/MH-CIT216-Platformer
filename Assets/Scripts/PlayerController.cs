@@ -140,12 +140,12 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag("Boundary"))
-        {
+        if (collision.gameObject.CompareTag("Boundary")) Die();
+    }
+
+    public void Die(){
             GameManager.instance.DecreaseLives();
-            
             SceneManager.LoadScene(0);
-        }
     }
 
     void Flip()

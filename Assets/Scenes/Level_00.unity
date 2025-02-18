@@ -615,6 +615,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c86c21e537ad81f40a785a9320b5a1da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fireball: {fileID: 6391956211456024759, guid: 8981822d035e0ec43a9f67a8345fac47, type: 3}
+  bufferTime: 0.25
 --- !u!1 &700039115
 GameObject:
   m_ObjectHideFlags: 0

@@ -4,14 +4,15 @@ using UnityEngine;
 
 public class DragonController : MonoBehaviour
 {
+    [SerializeField] GameObject fireball;
     int direction = 1;
     int pausedInt = 1;
-    SpriteRenderer spriteRenderer;
     Animator animator;
+
+    public float bufferTime;
 
     void Start()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
         StartCoroutine("CheckForPlayer");
     }
@@ -25,7 +26,7 @@ public class DragonController : MonoBehaviour
         if (hit.collider == null)
         {
             direction *= -1;
-            spriteRenderer.flipX = !spriteRenderer.flipX;
+            Flip();
         }
 
         transform.position = Vector2.Lerp(transform.position, new Vector2(transform.position.x - 1 * direction * pausedInt, transform.position.y), Time.deltaTime);
@@ -50,7 +51,7 @@ public class DragonController : MonoBehaviour
             {
                 animator.SetTrigger("isSpitting");
                 pausedInt = 0;
-                print("spit");
+                Invoke("Spit", bufferTime);
                 yield return new WaitForSeconds(2f);
             }
             else
@@ -59,5 +60,16 @@ public class DragonController : MonoBehaviour
                 yield return new WaitForSeconds(0.25f);
             }
         }
+    }
+    void Flip()
+    {
+        Vector3 theScale = transform.localScale;
+        theScale.x *= -1;
+        transform.localScale = theScale;
+    }
+
+    private void Spit(){
+        
+        Instantiate(fireball, transform.position, (direction == 1) ? Quaternion.identity : Quaternion.Euler(0, 180, 0));
     }
 }
