@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.SceneManagement;
 using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -31,6 +32,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         animator = GetComponent<Animator>();                                                // for animation
+        animator.SetBool("player_hurt", false);
         spriteRenderer = GetComponent<SpriteRenderer>();                                    // for sprite flip
         rb = GetComponent<Rigidbody2D>();                                                   // for physics
         audioSource = GetComponent<AudioSource>();
@@ -104,6 +106,11 @@ public class PlayerController : MonoBehaviour
             isGrounded = true;
             //Debug.Log("touching ground");
         }
+
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            Die();
+        }
     }
 
     public void OnCollisionExit2D(Collision2D collision)
@@ -143,9 +150,17 @@ public class PlayerController : MonoBehaviour
         if (collision.gameObject.CompareTag("Boundary")) Die();
     }
 
+    private void DeathReset()
+    {
+        GameManager.instance.DecreaseLives();
+        SceneManager.LoadScene(0);
+    }
+
     public void Die(){
-            GameManager.instance.DecreaseLives();
-            SceneManager.LoadScene(0);
+        print("ouch!");
+        animator.SetBool("player_hurt", true);
+        movementSpeed = 0;
+        Invoke("DeathReset", 0.5f);
     }
 
     void Flip()
@@ -161,4 +176,6 @@ public class PlayerController : MonoBehaviour
         if (facingRight) return Vector2.right;
         else return Vector2.left;
     }
+
+
 }

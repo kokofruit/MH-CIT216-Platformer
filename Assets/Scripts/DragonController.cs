@@ -41,12 +41,16 @@ public class DragonController : MonoBehaviour
         }
     }
 
+    // NEW COROUTINE
     private IEnumerator CheckForPlayer()
     {
         while (true)
         {
+            // Raycast in front of the dragon
             RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.left * direction, 5f);
             Debug.DrawRay(transform.position, new Vector3(-1f * direction * 5f, 0), Color.cyan, 0.5f);
+
+            // If the player is there, stop moving and spit a fireball
             if (hit.collider != null && hit.collider.gameObject.CompareTag("Player"))
             {
                 animator.SetTrigger("isSpitting");
@@ -54,6 +58,8 @@ public class DragonController : MonoBehaviour
                 Invoke("Spit", bufferTime);
                 yield return new WaitForSeconds(2f);
             }
+
+            // Otherwise, wait a tiny bit and raycast again
             else
             {
                 pausedInt = 1;
