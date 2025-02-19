@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
 
     private int lives = 3;
+    private int bones = 0;
 
     void Awake()
     {
@@ -22,13 +23,27 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+    private void Start()
+    {
+        bones = 0;
+    }
+
     public void DecreaseLives()
     {
         lives--;
+        if (lives == 0)
+        {
+            print("die");
+        }
     }
 
     public int GetLives()
     {
         return lives;
+    }
+
+    public void IncreaseBones()
+    {
+        bones++;
     }
 }

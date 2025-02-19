@@ -148,6 +148,11 @@ public class PlayerController : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Boundary")) Die();
+        else if (collision.gameObject.CompareTag("PickUp"))
+        {
+            GameManager.instance.IncreaseBones();
+            Destroy(collision.gameObject);
+        }
     }
 
     private void DeathReset()
