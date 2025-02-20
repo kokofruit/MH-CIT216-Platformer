@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEditor.SceneManagement;
 using UnityEditor.SearchService;
 using UnityEngine;
@@ -15,6 +16,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float gravityMultiplier;
     [SerializeField] GameObject fire;
     [SerializeField] Transform firePoint;
+    [SerializeField] TMP_Text bonesText;
 
     // Private
     Vector2 movementVector;
@@ -27,6 +29,7 @@ public class PlayerController : MonoBehaviour
     float fireRate = 0.3f;
     float nextFire = 0f;
     bool facingRight = true;
+    float bonesCollected = 0f;
 
     [Header("Audio Clips")]
     public AudioClip shootSound;
@@ -116,7 +119,7 @@ public class PlayerController : MonoBehaviour
 
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            Die();
+            StartCoroutine("Die");
         }
     }
 
@@ -143,7 +146,6 @@ public class PlayerController : MonoBehaviour
 
     public void OnFire(InputValue fireValue)
     {
-        GameManager.instance.WinSequence();
         if (Time.time > nextFire)
         {
             nextFire = Time.time + fireRate;
@@ -156,28 +158,46 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag("Boundary")) Die();
+        if (collision.gameObject.CompareTag("Boundary")) StartCoroutine("Die");
         else if (collision.gameObject.CompareTag("PickUp"))
         {
-            GameManager.instance.IncreaseBones();
+            //GameManager.instance.IncreaseBones();
+            bonesCollected++;
+            bonesText.SetText("" + bonesCollected);
             SoundManager.instance.PlaySound(collectSound);
             Destroy(collision.gameObject);
         }
+        else if (collision.gameObject.CompareTag("WinZone"))
+        {
+            if (bonesCollected >= 3f) GameManager.instance.WinSequence();
+        }
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            StartCoroutine("Die");
+        }
     }
 
-    private void DeathReset()
+    IEnumerator Die()
     {
-        GameManager.instance.DecreaseLives();
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }
-
-    public void Die(){
-        print("ouch!");
-        GetComponent<PlayerInput>().DeactivateInput();
+        // Play sound and set animation
         animator.SetBool("player_hurt", true);
-        rb.gravityScale = 0;
         SoundManager.instance.PlaySound(hurtSound);
-        Invoke("DeathReset", 0.5f);
+        // Freeze player
+        GetComponent<PlayerInput>().DeactivateInput();
+        gravityMultiplier = 0f;
+        // Decrease Lives
+        GameManager.instance.DecreaseLives();
+        // Wait and then restart level
+        yield return new WaitForSeconds(0.75f);
+        
+        if (GameManager.instance.GetLives() < 1)
+        {
+            GameManager.instance.LoseSequence();
+        }
+        else
+        {
+            GameManager.instance.RestartLevel();
+        }
     }
 
     void Flip()

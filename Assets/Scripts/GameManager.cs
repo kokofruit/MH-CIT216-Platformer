@@ -14,6 +14,9 @@ public class GameManager : MonoBehaviour
     private int lives = 3;
     private int bones = 0;
 
+    [SerializeField] GameObject WinScreen;
+    [SerializeField] GameObject LoseScreen;
+
     void Awake()
     {
         if (instance == null)
@@ -29,39 +32,48 @@ public class GameManager : MonoBehaviour
         print("awake");
     }
 
-    private void Start()
-    {
-        bones = 0;
-        bonesText.SetText("x" + bones);
-    }
-
     public void DecreaseLives()
     {
         lives--;
-        if (lives == 0)
-        {
-            print("die");
-        }
     }
-
+    
     public int GetLives()
     {
         return lives;
     }
 
-    public void IncreaseBones()
+    public void RestartLevel()
     {
-        bones++;
-        bonesText.SetText("x" + bones);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void ResetGame()
+    {
+        Destroy(gameObject);
+        Destroy(SoundManager.instance.gameObject);
+        Destroy(FindAnyObjectByType<IntroScreenController>());
+
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     public void WinSequence()
     {
         // Pause player input
         FindAnyObjectByType<PlayerController>().GetComponent<PlayerInput>().DeactivateInput();
-        Destroy(gameObject);
-        Destroy(FindAnyObjectByType<SoundManager>().gameObject);
-        SceneManager.LoadScene(0);
-        print("Reset");
+        // Show win screen
+        Instantiate(WinScreen);
+        // Reset the game
+        Invoke("ResetGame", 5f);
     }
+
+    public void LoseSequence()
+    {
+        // Pause player input
+        FindAnyObjectByType<PlayerController>().GetComponent<PlayerInput>().DeactivateInput();
+        // Show win screen
+        Instantiate(LoseScreen);
+        // Reset the game
+        Invoke("ResetGame", 5f);
+    }
+
 }
