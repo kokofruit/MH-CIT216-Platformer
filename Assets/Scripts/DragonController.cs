@@ -10,6 +10,8 @@ public class DragonController : MonoBehaviour
     Animator animator;
 
     public float bufferTime;
+    public AudioClip fireballSound;
+    public AudioClip deathSound;
 
     void Start()
     {
@@ -37,6 +39,7 @@ public class DragonController : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Fire"))
         {
+            SoundManager.instance.PlaySound(deathSound);
             Destroy(gameObject);
         }
     }
@@ -77,5 +80,6 @@ public class DragonController : MonoBehaviour
     private void Spit(){
         
         Instantiate(fireball, transform.position, (direction == 1) ? Quaternion.identity : Quaternion.Euler(0, 180, 0));
+        SoundManager.instance.PlaySound(fireballSound);
     }
 }

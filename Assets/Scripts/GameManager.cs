@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -18,13 +19,14 @@ public class GameManager : MonoBehaviour
         if (instance == null)
         {
             instance = this;
+            DontDestroyOnLoad(gameObject);
         }
         else if (instance != this)
         {
             Destroy(gameObject);
         }
 
-        DontDestroyOnLoad(gameObject);
+        print("awake");
     }
 
     private void Start()
@@ -53,4 +55,13 @@ public class GameManager : MonoBehaviour
         bonesText.SetText("x" + bones);
     }
 
+    public void WinSequence()
+    {
+        // Pause player input
+        FindAnyObjectByType<PlayerController>().GetComponent<PlayerInput>().DeactivateInput();
+        Destroy(gameObject);
+        Destroy(FindAnyObjectByType<SoundManager>().gameObject);
+        SceneManager.LoadScene(0);
+        print("Reset");
+    }
 }

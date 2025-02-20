@@ -28,6 +28,12 @@ public class PlayerController : MonoBehaviour
     float nextFire = 0f;
     bool facingRight = true;
 
+    [Header("Audio Clips")]
+    public AudioClip shootSound;
+    public AudioClip jumpSound;
+    public AudioClip collectSound;
+    public AudioClip hurtSound;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -64,6 +70,7 @@ public class PlayerController : MonoBehaviour
             //transform.Translate(Vector2.up * jumpHeight * Time.deltaTime);
             //StartCoroutine("LerpJump");
             rb.AddForce(Vector2.up * jumpHeight);
+            SoundManager.instance.PlaySound(jumpSound, volume:0.75f);
             jump = false;
         }
 
@@ -136,11 +143,13 @@ public class PlayerController : MonoBehaviour
 
     public void OnFire(InputValue fireValue)
     {
+        GameManager.instance.WinSequence();
         if (Time.time > nextFire)
         {
             nextFire = Time.time + fireRate;
             animator.SetTrigger("is_shooting");
-            audioSource.PlayOneShot(audioSource.clip, Random.Range(0.8f, 1));
+            //audioSource.PlayOneShot(audioSource.clip, Random.Range(0.8f, 1));
+            SoundManager.instance.PlaySound(shootSound, Random.Range(0.9f, 1.1f), Random.Range(0.8f, 1));
             Instantiate(fire, firePoint.position, facingRight ? firePoint.rotation : Quaternion.Euler(0, 180, 0));
         }
     }
@@ -151,6 +160,7 @@ public class PlayerController : MonoBehaviour
         else if (collision.gameObject.CompareTag("PickUp"))
         {
             GameManager.instance.IncreaseBones();
+            SoundManager.instance.PlaySound(collectSound);
             Destroy(collision.gameObject);
         }
     }
@@ -163,8 +173,10 @@ public class PlayerController : MonoBehaviour
 
     public void Die(){
         print("ouch!");
+        GetComponent<PlayerInput>().DeactivateInput();
         animator.SetBool("player_hurt", true);
-        movementSpeed = 0;
+        rb.gravityScale = 0;
+        SoundManager.instance.PlaySound(hurtSound);
         Invoke("DeathReset", 0.5f);
     }
 
@@ -181,6 +193,5 @@ public class PlayerController : MonoBehaviour
         if (facingRight) return Vector2.right;
         else return Vector2.left;
     }
-
 
 }

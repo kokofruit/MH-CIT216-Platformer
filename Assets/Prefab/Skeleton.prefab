@@ -184,3 +184,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   boneDrop: {fileID: 8062765830130710170, guid: 880c7101787156641b66511ade897863, type: 3}
+  deathSound: {fileID: 8300000, guid: 8cb380624be83c74a91694c418159cbb, type: 3}

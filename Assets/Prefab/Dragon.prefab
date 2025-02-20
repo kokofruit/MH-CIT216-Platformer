@@ -195,3 +195,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fireball: {fileID: 6391956211456024759, guid: 8981822d035e0ec43a9f67a8345fac47, type: 3}
   bufferTime: 0.25
+  fireballSound: {fileID: 8300000, guid: 175d552b65ef9494fa31a09f5f8a091b, type: 3}
+  deathSound: {fileID: 8300000, guid: 8cb380624be83c74a91694c418159cbb, type: 3}

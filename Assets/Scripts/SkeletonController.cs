@@ -7,6 +7,8 @@ public class SkeletonController : MonoBehaviour
     [SerializeField] GameObject boneDrop;
     int direction = 1;
 
+    public AudioClip deathSound;
+
     #region Movement
     void FixedUpdate()
     {
@@ -37,6 +39,7 @@ public class SkeletonController : MonoBehaviour
         {
             Vector2 bonePos = new Vector2(transform.position.x, transform.position.y - 0.5f);
             Instantiate(boneDrop, bonePos, Quaternion.identity);
+            SoundManager.instance.PlaySound(deathSound);
             Destroy(gameObject);
         }
     }
