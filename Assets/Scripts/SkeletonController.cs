@@ -35,7 +35,8 @@ public class SkeletonController : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Fire"))
         {
-            Instantiate(boneDrop, transform.position, Quaternion.identity);
+            Vector2 bonePos = new Vector2(transform.position.x, transform.position.y - 0.5f);
+            Instantiate(boneDrop, bonePos, Quaternion.identity);
             Destroy(gameObject);
         }
     }

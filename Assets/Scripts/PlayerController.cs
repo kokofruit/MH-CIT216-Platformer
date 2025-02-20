@@ -158,7 +158,7 @@ public class PlayerController : MonoBehaviour
     private void DeathReset()
     {
         GameManager.instance.DecreaseLives();
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     public void Die(){

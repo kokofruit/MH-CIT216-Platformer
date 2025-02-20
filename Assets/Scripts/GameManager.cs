@@ -1,10 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
+
+    public TMP_Text bonesText;
 
     private int lives = 3;
     private int bones = 0;
@@ -26,6 +30,7 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         bones = 0;
+        bonesText.SetText("x" + bones);
     }
 
     public void DecreaseLives()
@@ -45,5 +50,7 @@ public class GameManager : MonoBehaviour
     public void IncreaseBones()
     {
         bones++;
+        bonesText.SetText("x" + bones);
     }
+
 }
