@@ -17,7 +17,6 @@ public class SkeletonController : MonoBehaviour
 
         if (hit.collider == null)
         {
-            direction *= -1;
             Flip();
         }
 
@@ -29,6 +28,7 @@ public class SkeletonController : MonoBehaviour
         Vector3 theScale = transform.localScale;
         theScale.x *= -1;
         transform.localScale = theScale;
+        direction *= -1;
     }
     #endregion
 

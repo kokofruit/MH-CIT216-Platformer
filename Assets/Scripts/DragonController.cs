@@ -27,7 +27,6 @@ public class DragonController : MonoBehaviour
 
         if (hit.collider == null)
         {
-            direction *= -1;
             Flip();
         }
 
@@ -75,6 +74,7 @@ public class DragonController : MonoBehaviour
         Vector3 theScale = transform.localScale;
         theScale.x *= -1;
         transform.localScale = theScale;
+        direction *= -1;
     }
 
     private void Spit(){
