@@ -29,7 +29,9 @@ public class GhostController : MonoBehaviour
     {
         if (raging)
         {
+            // If in attack mode, move towards the player
             transform.position = Vector2.Lerp(transform.position, player.transform.position, Time.deltaTime);
+            // Stay facing the player
             if (Mathf.Sign(transform.position.x - player.transform.position.x) != direction)
             {
                 Flip();
@@ -37,9 +39,11 @@ public class GhostController : MonoBehaviour
         }
         else
         {
+            // Raycast down and check for the player
             RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, raycastheight);
             Debug.DrawRay(transform.position, new Vector3(0, -1 * raycastheight), Color.red, 0.5f);
 
+            // If the player is found, enter attack mode
             if (hit.collider != null && hit.collider.CompareTag("Player"))
             {
                 raging = true;
@@ -47,13 +51,14 @@ public class GhostController : MonoBehaviour
                 return;
             }
 
+            // Move ghost forwards
             transform.position = Vector2.Lerp(transform.position, new Vector2(transform.position.x - 1 * direction, transform.position.y), Time.deltaTime);
 
+            // Flip if too far from starting position
             if (Mathf.Abs(origPos.x - transform.position.x) >= movementRange)
             {
                 Flip();
             }
-
         }
     }
 
